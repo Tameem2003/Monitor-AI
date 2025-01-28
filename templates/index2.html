@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Processing Results</title>
+</head>
+<body style="background-color:rgb(227, 226, 248)">
+    <h1 style="font-family: Arial, sans-serif; font-size: 36px; font-weight: bold; color: #2c3e50; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); letter-spacing: 1px; padding: 10px;text-align: center;">Smart Student Behaviour Monitoring System</h1>
+    
+    <div style="text-align: center; margin: 20px;">
+        <video width="640" height="480" controls style="border: 3px solid #3498db; border-radius: 10px;">
+            <source src="/{{ video_path }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <center>
+        <a href="/" style="text-decoration: none;">
+            <button type="button" style="padding: 12px 20px; background-color: #3498db; color: white; font-size: 18px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
+                Back to Home
+            </button>
+        </a>
+    </center>
+
+    <p style="background-color: #28a745; color: white; padding: 15px; font-size: 16px; border-radius: 5px; text-align: center; font-family: Arial, sans-serif;">
+        Video processed successfully. You can watch the processed video above.
+    </p>
+</body>
+</html>

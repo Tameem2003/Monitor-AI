@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results - FocusLens AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .results-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0d6efd;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .percentage-bar {
+            height: 24px;
+            background: #e9ecef;
+            border-radius: 12px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .percentage-fill {
+            height: 100%;
+            background: #0d6efd;
+            transition: width 1s ease-in-out;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            margin-top: 2rem;
+        }
+
+        .btn:hover {
+            background-color: #0b5ed7;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Analysis Results</h1>
+        </div>
+
+        <div class="results-card">
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{{ analysis.total_time }}s</div>
+                    <div class="stat-label">Total Duration</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ analysis.engaged_time }}s</div>
+                    <div class="stat-label">Time Engaged</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ analysis.sleeping_time }}s</div>
+                    <div class="stat-label">Time Sleeping</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ analysis.engaged_percentage }}%</div>
+                    <div class="stat-label">Engagement Rate</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Engagement Overview</h3>
+            <div class="percentage-bar">
+                <div class="percentage-fill" style="width: {{ analysis.engaged_percentage }}%"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; color: #6c757d;">
+                <span>Sleeping ({{ analysis.sleeping_percentage }}%)</span>
+                <span>Engaged ({{ analysis.engaged_percentage }}%)</span>
+            </div>
+
+            <center>
+                <a href="/" class="btn">Analyze Another Video</a>
+            </center>
+        </div>
+
+        <footer class="footer">
+            <div>FocusLens AI - Advanced Student Engagement Analytics</div>
+        </footer>
+    </div>
+</body>
+</html>
