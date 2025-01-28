@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Student Behavior Monitoring System
 
 A real-time student engagement monitoring system built with Python, Flask, and OpenCV that analyzes student behavior through facial detection and eye tracking.
@@ -64,3 +65,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+=======
+# Monitor-AI
+Student Behavior Monitoring System that analyzes student engagement through facial detection and eye tracking.
+>>>>>>> 7763fc994db2ea1689819b015b0d883f588b1812
