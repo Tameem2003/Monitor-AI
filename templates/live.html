@@ -3,21 +3,812 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Student Behavior Detection</title>
+    <title>Live Student Behavior Detection - Monitor AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bg-dark: #1a1f36;
+            --bg-light: #f8fafc;
+            --text-light: #ecf0f1;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background: var(--bg-dark);
+            background-image: linear-gradient(135deg, #1a1f36 0%, #2c3e50 100%);
+            min-height: 100vh;
+            max-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            overflow-y: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background: rgba(26, 31, 54, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-brand img {
+            height: 35px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+
+        .navbar h1 {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 80px auto 0;
+            padding: 1rem;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 1.5rem;
+            align-items: start;
+            height: calc(100vh - 120px);
+            max-height: calc(100vh - 120px);
+        }
+
+        .video-section {
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            max-height: calc(100vh - 120px);
+        }
+
+        .video-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            max-height: 60vh;
+            height: 60vh;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .video-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .video-feed {
+            border: 3px solid var(--secondary-color);
+            border-radius: 15px;
+            width: 100%;
+            height: 100%;
+            max-height: 60vh;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .status-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .status-overlay.engaged {
+            background: rgba(39, 174, 96, 0.9);
+            border-color: #27ae60;
+        }
+
+        .status-overlay.sleeping {
+            background: rgba(231, 76, 60, 0.9);
+            border-color: #e74c3c;
+        }
+
+        .analytics-panel {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .analytics-panel:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .analytics-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .analytics-title i {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--secondary-color);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-value.engaged {
+            color: var(--success-color);
+            text-shadow: 0 0 10px rgba(39, 174, 96, 0.3);
+        }
+
+        .stat-value.sleeping {
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--secondary-color));
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            margin: 0.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .session-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .session-info:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .session-info h4 {
+            margin-bottom: 0.8rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .session-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .session-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: blink 1.5s infinite;
+        }
+
+        .status-active {
+            background: var(--success-color);
+        }
+
+        .status-completed {
+            background: var(--warning-color);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                height: auto;
+                max-height: none;
+            }
+            
+            .video-feed {
+                width: 100%;
+                max-width: 500px;
+                max-height: 40vh;
+                height: 40vh;
+            }
+
+            .video-container {
+                max-height: 40vh;
+                height: 40vh;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                height: auto;
+                max-height: none;
+                padding: 0.5rem;
+            }
+
+            .analytics-panel {
+                max-height: none;
+                height: auto;
+            }
+
+            .video-section {
+                max-height: none;
+                height: auto;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--secondary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Smooth transitions for all elements */
+        * {
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
-<body style="background-color:rgb(227, 226, 248)">
-    <h1 style="font-family: Arial, sans-serif; font-size: 36px; font-weight: bold; color: #2c3e50; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); letter-spacing: 1px; padding: 10px;text-align: center;">Live Student Behavior Detection</h1>
-    
-    <div style="text-align: center; margin: 20px;">
-        <img src="{{ url_for('video_feed') }}" width="640" height="480" style="border: 3px solid #3498db; border-radius: 10px;">
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="{{ url_for('static', filename='images/Colorful Modern Infinity Technology Free Logo.png') }}" alt="Monitor AI Logo">
+            <h1><i class="fas fa-brain"></i> Monitor AI - Live Detection</h1>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="video-section">
+                <div class="video-container">
+                    <img src="{{ url_for('video_feed') }}" class="video-feed" width="640" height="480" alt="Live Video Feed">
+                    <div class="status-overlay" id="statusOverlay">
+                        <i class="fas fa-circle"></i> <span id="statusText">Initializing...</span>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button id="startSession" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Session
+                    </button>
+                    <button id="stopSession" class="btn btn-success" style="display: none;">
+                        <i class="fas fa-stop"></i> Stop Session
+                    </button>
+                    <button id="generateReport" class="btn btn-success" style="display: none;">
+                        <i class="fas fa-chart-bar"></i> Generate Detailed Analytics Report
+                    </button>
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+
+            <div class="analytics-panel">
+                <h3 class="analytics-title">
+                    <i class="fas fa-chart-line"></i> Real-Time Analytics
+                </h3>
+
+                <div class="session-info">
+                    <h4><i class="fas fa-clock"></i> Session Info</h4>
+                    <p>Duration: <span id="sessionDuration">00:00:00</span></p>
+                    <p>Status: <span class="status-indicator" id="statusIndicator"></span><span id="sessionStatus">Not Started</span></p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value engaged" id="engagedCount">0</div>
+                        <div class="stat-label">Engaged Frames</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value sleeping" id="sleepingCount">0</div>
+                        <div class="stat-label">Sleeping Frames</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="engagementRate">0%</div>
+                    <div class="stat-label">Engagement Rate</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="engagementProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="totalFrames">0</div>
+                    <div class="stat-label">Total Frames</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <center>
-        <a href="/" style="text-decoration: none;">
-            <button type="button" style="padding: 12px 20px; background-color: #3498db; color: white; font-size: 18px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
-                Back to Home
-            </button>
-        </a>
-    </center>
+    <script>
+        let sessionStartTime = null;
+        let sessionDuration = 0;
+        let engagedFrames = 0;
+        let sleepingFrames = 0;
+        let totalFrames = 0;
+        let sessionActive = false;
+        let statusUpdateInterval;
+        let sessionId = null;
+        let lastStatus = '';
+
+        // Smooth number animation
+        function animateNumber(element, targetValue, duration = 1000) {
+            const startValue = parseInt(element.textContent) || 0;
+            const startTime = performance.now();
+            
+            function updateNumber(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const currentValue = Math.floor(startValue + (targetValue - startValue) * progress);
+                element.textContent = currentValue;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateNumber);
+                }
+            }
+            
+            requestAnimationFrame(updateNumber);
+        }
+
+        // Update session duration with smooth animation
+        function updateSessionDuration() {
+            if (sessionStartTime && sessionActive) {
+                const now = new Date();
+                sessionDuration = Math.floor((now - sessionStartTime) / 1000);
+                const hours = Math.floor(sessionDuration / 3600);
+                const minutes = Math.floor((sessionDuration % 3600) / 60);
+                const seconds = sessionDuration % 60;
+                document.getElementById('sessionDuration').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Update engagement rate with smooth animation
+        function updateEngagementRate() {
+            if (totalFrames > 0) {
+                const rate = Math.round((engagedFrames / totalFrames) * 100);
+                const rateElement = document.getElementById('engagementRate');
+                const progressElement = document.getElementById('engagementProgress');
+                
+                // Animate the percentage
+                const currentRate = parseInt(rateElement.textContent) || 0;
+                if (currentRate !== rate) {
+                    animateNumber(rateElement, rate, 800);
+                }
+                
+                // Animate the progress bar
+                progressElement.style.width = rate + '%';
+            }
+        }
+
+        // Start session with smooth transitions
+        document.getElementById('startSession').addEventListener('click', function() {
+            const btn = this;
+            btn.innerHTML = '<span class="loading"></span> Starting...';
+            btn.disabled = true;
+
+            fetch('/start_live_session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    sessionId = data.session_id;
+                    sessionStartTime = new Date();
+                    sessionActive = true;
+                    engagedFrames = 0;
+                    sleepingFrames = 0;
+                    totalFrames = 0;
+                    
+                    // Update UI with smooth transitions
+                    document.getElementById('sessionStatus').textContent = 'Active';
+                    document.getElementById('statusIndicator').className = 'status-indicator status-active';
+                    document.getElementById('startSession').style.display = 'none';
+                    document.getElementById('stopSession').style.display = 'inline-block';
+                    document.getElementById('generateReport').style.display = 'none';
+                    
+                    // Start duration timer
+                    statusUpdateInterval = setInterval(updateSessionDuration, 1000);
+                    
+                    // Add success animation
+                    btn.style.background = 'linear-gradient(135deg, #27ae60 0%, #229954 100%)';
+                    setTimeout(() => {
+                        btn.style.background = 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)';
+                    }, 500);
+                } else {
+                    alert('Error starting session: ' + data.error);
+                    btn.innerHTML = '<i class="fas fa-play"></i> Start Session';
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error starting session. Please try again.');
+                btn.innerHTML = '<i class="fas fa-play"></i> Start Session';
+                btn.disabled = false;
+            });
+        });
+
+        // Stop session with smooth transitions
+        document.getElementById('stopSession').addEventListener('click', function() {
+            const btn = this;
+            btn.innerHTML = '<span class="loading"></span> Stopping...';
+            btn.disabled = true;
+
+            fetch('/stop_live_session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    sessionActive = false;
+                    document.getElementById('sessionStatus').textContent = 'Completed';
+                    document.getElementById('statusIndicator').className = 'status-indicator status-completed';
+                    document.getElementById('stopSession').style.display = 'none';
+                    document.getElementById('generateReport').style.display = 'inline-block';
+                    
+                    clearInterval(statusUpdateInterval);
+                    
+                    // Add completion animation
+                    btn.style.background = 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)';
+                } else {
+                    alert('Error stopping session: ' + data.error);
+                    btn.innerHTML = '<i class="fas fa-stop"></i> Stop Session';
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error stopping session. Please try again.');
+                btn.innerHTML = '<i class="fas fa-stop"></i> Stop Session';
+                btn.disabled = false;
+            });
+        });
+
+        // Generate detailed report
+        document.getElementById('generateReport').addEventListener('click', function() {
+            const btn = this;
+            btn.innerHTML = '<span class="loading"></span> Generating...';
+            btn.disabled = true;
+
+            const reportData = {
+                sessionDuration: sessionDuration,
+                engagedFrames: engagedFrames,
+                sleepingFrames: sleepingFrames,
+                totalFrames: totalFrames,
+                engagementRate: totalFrames > 0 ? Math.round((engagedFrames / totalFrames) * 100) : 0,
+                sessionStartTime: sessionStartTime ? sessionStartTime.toISOString() : null
+            };
+
+            fetch('/generate_live_report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(reportData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.open('/live_report', '_blank');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Report Generated';
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-chart-bar"></i> Generate Detailed Analytics Report';
+                        btn.disabled = false;
+                    }, 2000);
+                } else {
+                    alert('Error generating report: ' + data.error);
+                    btn.innerHTML = '<i class="fas fa-chart-bar"></i> Generate Detailed Analytics Report';
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error generating report. Please try again.');
+                btn.innerHTML = '<i class="fas fa-chart-bar"></i> Generate Detailed Analytics Report';
+                btn.disabled = false;
+            });
+        });
+
+        // Function to update status from server data with smooth transitions
+        function updateStatusFromServer() {
+            if (sessionId && sessionActive) {
+                fetch('/get_session_status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update analytics counters with smooth animations
+                        if (engagedFrames !== data.engaged_frames) {
+                            animateNumber(document.getElementById('engagedCount'), data.engaged_frames);
+                            engagedFrames = data.engaged_frames;
+                        }
+                        
+                        if (sleepingFrames !== data.sleeping_frames) {
+                            animateNumber(document.getElementById('sleepingCount'), data.sleeping_frames);
+                            sleepingFrames = data.sleeping_frames;
+                        }
+                        
+                        if (totalFrames !== data.total_frames) {
+                            animateNumber(document.getElementById('totalFrames'), data.total_frames);
+                            totalFrames = data.total_frames;
+                        }
+                        
+                        updateEngagementRate();
+                        
+                        // Update status overlay with smooth transitions
+                        const statusOverlay = document.getElementById('statusOverlay');
+                        const statusText = document.getElementById('statusText');
+                        
+                        if (lastStatus !== data.current_status) {
+                            statusText.textContent = data.current_status;
+                            
+                            // Remove old classes
+                            statusOverlay.className = 'status-overlay';
+                            
+                            // Add new class with delay for smooth transition
+                            setTimeout(() => {
+                                if (data.current_status === 'Engaged') {
+                                    statusOverlay.classList.add('engaged');
+                                } else if (data.current_status === 'Sleeping') {
+                                    statusOverlay.classList.add('sleeping');
+                                }
+                            }, 100);
+                            
+                            lastStatus = data.current_status;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching session status:', error);
+                });
+            }
+        }
+
+        // Periodically update status from server (every 2 seconds for smoother updates)
+        setInterval(updateStatusFromServer, 2000);
+
+        // Initialize status display
+        document.getElementById('statusText').textContent = 'Initializing...';
+        
+        // Add page load animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.stat-card, .session-info, .analytics-panel');
+            elements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
 </body>
 </html>
