@@ -1,4 +1,4 @@
-# Student Behavior Monitoring System
+# Monitor-AI
 
 A real-time student engagement monitoring system built with Python, Flask, and OpenCV that analyzes student behavior through facial detection and eye tracking.
 
@@ -132,12 +132,8 @@ We welcome contributions! Please feel free to submit pull requests or open issue
 - Documentation improvements
 - Performance optimizations
 
-## Development Team
-
-**PES Institute of Technology and Management**
-
-- **Abdul Wahab Sufyan** (4PM21AI001)
-- **Tameem Abrar ul Haq** (4PM21AI050)
+## Developed by
+- **Tameem Abrar ul Haq** 
 
 ## License
 
