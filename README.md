@@ -2,7 +2,8 @@
 
 A real-time student engagement monitoring system built with Python, Flask, and OpenCV that analyzes student behavior through facial detection and eye tracking.
 
-![Home Page]
+Home Page
+
 ![Screenshot 2025-06-28 065047](https://github.com/user-attachments/assets/a1bf3b73-7ec6-4b93-aed6-fc720b42b1d3)
 
 *Main dashboard with video upload and live monitoring options*
@@ -16,7 +17,8 @@ A real-time student engagement monitoring system built with Python, Flask, and O
 - **Detailed Reports**: Comprehensive analytics with charts and recommendations
 - **Web Interface**: Modern, responsive web-based interface for easy access
 
-![Live Detection]
+Live Detection
+
 ![Screenshot 2025-06-28 141645](https://github.com/user-attachments/assets/3fcf8597-7e29-4fa1-b73e-ae12856ab673)
 
 *Real-time monitoring interface with live video feed and analytics*
@@ -69,7 +71,8 @@ python app.py
 - Automatic processing and analysis
 - Instant detailed reports with charts
 
-![Analysis Report]
+Analysis Report
+
 ![Screenshot 2025-06-28 141751](https://github.com/user-attachments/assets/3545a220-67cb-450f-ba57-f291f34c04a6)
 
 *Detailed analytics report with engagement metrics and recommendations*
